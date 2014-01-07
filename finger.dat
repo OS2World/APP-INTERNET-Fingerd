@@ -1,0 +1,15 @@
+**************************************************************************
+You have reached my OS/2 system!
+**************************************************************************
+The following output will be generated from an OS/2 command (.cmd) file:
+~xtest.cmd
+
+The following comes from the OS/2 command "dir /w":
+~xdir /w
+
+The following comes from hello.exe:
+~xhello.exe
+
+As you can see, this finger daemon is fairly powerful!
+Goodbye!
+

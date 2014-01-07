@@ -1,0 +1,162 @@
+		Fingerd for OS/2
+
+================== Overview =====================
+
+This is a finger daemon for OS/2.  It is designed to work with IBM's TCP/IP
+version 2.0 or later.  The finger daemon supports the following features:
+
+	Outputs a user specified file
+	Outputs the output of programs
+	Supports logging of finger requests (includes a time/date stamp)
+	Can beep whenever finger info is requested
+	Can display debugging info (same as log, but to screen)
+	Can execute external programs and scripts and have their
+	  output appear in the finger info.
+
+There is no information displayed on idle time or shell or other such
+things because it is irrelevent under OS/2.  (Well, not idle time, but
+that's for the next version).
+
+There are a number of parameters for fingerd, which are listed as follows:
+
+	-f filename	This parameter specifies which file is to be
+			used for finger requests.  This parameter is
+			*required*.  See the info on the finger data file.
+
+	-l filename	This parameter specifies a file where all finger
+			requests will be logged to.  The file is only
+			appended to.
+
+	-s servicename|portnumber
+			This parameter specifies that a different service or
+			port is to be used.  The default is the finger service,
+			which is usually assigned to port 79.  This parameter
+			is optional and will likely be removed from future
+			versions.
+
+	-p protocol	This parameter allows you to choose the protocol
+			used.  The default protocol is tcp, but udp may
+			be used specified instead.  the protocol can be
+			either "tcp" or "udp" (without the quotes).
+
+	-d		This parameter causes fingerd to display
+			the site and port number used for any finger requests.
+			It also reports which user the client was trying to
+			finger.
+
+	-b		This parameter causes fingerd to beep whenever
+			a client connects to it.
+
+==================== Demonstration ===================
+
+For a demonstration of this finger daemon, run demo.cmd.
+This shows off many of the features of this program.
+
+
+==================== Installation ====================
+
+fingerd can be started either manually or automatically.  To start it manually,
+type:
+
+	fingerd -f x:\directory\filename.ext
+
+where x:\directory\filename.ext is the drive, directory, and filename of the
+data file you are going to use.  I suggest using a filename called finger.dat
+and placing it in c:\tcpip\etc, or wherever your etc directory for TCP/IP is 
+located.  Please see the section on the finger data file before creating it.
+
+If you are concerned about security on your system, I recommend using the
+-l and/or -d option.  This will allow you to keep track of systems fingering
+you often.  If you're really paranoid, use the -b option to make it beep.
+The screen output from the -d option and the output to the log file are
+almost the same, with the exception being that the log file also records the
+date and time of the finger request.
+
+I suggest copying the file fingerd.exe to your \tcpip\bin directory.  If
+you want the finger daemon to automatically start each time you boot up,
+add it to tcpstart.cmd in \tcpip\bin.
+
+The added lines typically look like the following:
+
+start /min fingerd -f c:\tcpip\etc\finger.dat -l f:\tcpip\etc\finger.log -d -b
+echo 	..... Finger Daemon Started
+
+You should change it as necessary.  The /min after the start command
+tells OS/2 to start it minimized.  Unfortunately, every time you run 
+tcpipcfg.exe it removes the finger daemon from tcpstart.cmd.  I am looking
+into a way of solving this problem.
+
+Finger Data File
+----------------
+	The finger data file is what is sent out on a finger request.
+	This file is for the most part straight ASCII.  It is highly 
+	recomended that no ASCII values > 127 are used, since some
+	*N*X type systems will gag, namely Linux.  Also, try avoiding
+	escape sequences, since the terminal connected to you may not
+	be what you are expecting.
+
+	A feature has been added which allows you to execute a program or
+	script and have the output (up to 32K) piped through the finger
+	daemon to the client.  To use this feature, place 
+
+		~x command [parameters]
+	
+	starting on the left margin.  Future versions of this program will
+	elliminate the 32K restriction.
+
+
+	Here is an example finger data file:
+=====finger.dat=======
+Welcome to my host!
+~xtest.cmd
+You can also do input redirection:
+~xprogram.exe <inptfile.dat
+
+You can also include other data files:
+~x type otherfile.doc
+======================
+
+As you can see, this finger daemon is pretty powerful.
+
+I suggest looking at the finger.dat file included to see how it works.  
+It's fairly straight forward.
+
+Using the ~x feature will slow down the finger daemon significantly.  There is
+a lot of overhead when the daemon has to execute another program which cannot
+be eliminated.  If you are receiving a lot of finger requests, try to limit
+the number of external programs and/or scripts used.
+
+This program has been tested with IBM TCP/IP version 2.0 on an ethernet
+network with machines running OS/2 and Linux.  SLIP connections have also been
+tested.  
+
+Testing:  All features have been carefully tested, however I have only tested
+this with IBM TCP/IP version 2.0 since I don't have access to any other
+versions.  If you are running an earlier version and it works, let me know.
+It should work.
+
+Features left to add:
+	A macro which will display info typically shown on *N*X finger.
+	Clean up the code.  Make lots of procedures.
+	Change the pipe code for asynchronous execution for unlimited output.
+		(This isn't really necessary, since no one wants to
+		receive >32 from a finger request anyway!)
+	Allow this program to be tied to inetd (Anyone have any info on this?)
+	Add support for multiple finger data files (one per user).
+
+Forthcoming programs:
+	A PM write daemon and a new talk program based on ytalk.
+	(If I can ever get the info on how the protocols for these programs
+	work).
+
+If you have comments or questions, I can be reached by email at
+aaronw@cats.ucsc.edu (until June 18), or by snail mail at
+
+	Aaron Williams
+	35900 Turpin Way
+	Fremont, CA.
+	94536-2666, USA
+	Phone: (510) 792-0340, FAX: (510) 792-3243
+
+(Please note that these numbers are subject to change since I'm graduating
+in a couple of weeks.  Any comments will be forwarded, however.)
